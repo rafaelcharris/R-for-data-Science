@@ -1,0 +1,72 @@
+---
+title: "Logistic Regression Project"
+author: "Rafael"
+date: "14 de septiembre de 2018"
+output: html_document
+---
+
+Get the Data
+Read in the adult_sal.csv file and set it to a data frame called adult.
+```{r}
+adult <- read.csv("D:/Google Drive1/Eduaci?n - cursos/R for data science/R-Course-HTML-Notes/R-Course-HTML-Notes/R-for-Data-Science-and-Machine-Learning/Training Exercises/Machine Learning Projects/CSV files for ML Projects/adult_sal.csv")
+```
+
+Check the head of adult
+```{r}
+head(adult)
+```
+
+You should notice the index has been repeated. Drop this column.
+```{r}
+library(dplyr)
+adult <- select(adult, -X)
+```
+
+Check the head,str, and summary of the data now.
+```{r}
+head(adult)
+
+str(adult)
+
+summary(adult)
+```
+
+#Data Cleaning
+Notice that we have a lot of columns that are cateogrical factors, however a lot of these columns have too many factors than may be necessary. In this data cleaning section we'll try to clean these columns up by reducing the number of factors.
+
+type_employer column
+Use table() to check out the frequency of the type_employer column.
+
+```{r}
+table(adult$type_employer)
+```
+
+How many Null values are there for type_employer? What are the two smallest groups?
+
+There are 1836 Null values and the smallest groups are Never_worked and Without_pay
+
+Combine these two smallest groups into a single group called "Unemployed". There are lots of ways to do this, so feel free to get creative. Hint: It may be helpful to convert these objects into character data types (as.character() and then use sapply with a custom function)
+
+```{r}
+unemp <- function(job){
+  job <- as.character(job)
+  if (job == "Never-worked" | job == "Without_pay"){
+    return('Unemployed')
+  } else{
+    return(job)
+  }
+}
+
+adult$type_employer <- sapply(adult$type_employer, unemp)
+
+```
+
+What other columns are suitable for combining? Combine State and Local gov jobs into a category called SL-gov and combine self-employed jobs into a category called self-emp.
+
+```{r}
+```
+
+
+Marital Column
+Use table() to look at the marital column
+
