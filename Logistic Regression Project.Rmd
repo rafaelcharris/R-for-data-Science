@@ -8,7 +8,7 @@ output: html_document
 Get the Data
 Read in the adult_sal.csv file and set it to a data frame called adult.
 ```{r}
-adult <- read.csv("D:/Google Drive1/Eduaci?n - cursos/R for data science/R-Course-HTML-Notes/R-Course-HTML-Notes/R-for-Data-Science-and-Machine-Learning/Training Exercises/Machine Learning Projects/CSV files for ML Projects/adult_sal.csv")
+adult <- read.csv("D:/Google Drive1/Eduación - cursos/R for data science/R-Course-HTML-Notes/R-Course-HTML-Notes/R-for-Data-Science-and-Machine-Learning/Training Exercises/Machine Learning Projects/CSV files for ML Projects/adult_sal.csv")
 ```
 
 Check the head of adult
@@ -48,9 +48,10 @@ There are 1836 Null values and the smallest groups are Never_worked and Without_
 Combine these two smallest groups into a single group called "Unemployed". There are lots of ways to do this, so feel free to get creative. Hint: It may be helpful to convert these objects into character data types (as.character() and then use sapply with a custom function)
 
 ```{r}
+#Function to melt two conditions
 unemp <- function(job){
   job <- as.character(job)
-  if (job == "Never-worked" | job == "Without_pay"){
+  if (job == "Never-worked" | job == "Without-pay"){
     return('Unemployed')
   } else{
     return(job)
@@ -64,9 +65,57 @@ adult$type_employer <- sapply(adult$type_employer, unemp)
 What other columns are suitable for combining? Combine State and Local gov jobs into a category called SL-gov and combine self-employed jobs into a category called self-emp.
 
 ```{r}
+state <- function(job){
+  job <- as.character(job)
+  if (job == "State-gov" | job == "Local-gov"){
+    return('SL-gov')
+  } else{
+    return(job)
+  }
+}
+
+adult$type_employer <- sapply(adult$type_employer, state)
+
+self <- function(job){
+  job <- as.character(job)
+  if (job == "Self-emp-inc" | job == "Self-emp-not-inc"){
+    return('self-emp')
+  } else{
+    return(job)
+  }
+}
+adult$type_employer <- sapply(adult$type_employer, self)
 ```
 
 
-Marital Column
+#Marital Column
 Use table() to look at the marital column
+```{r}
+table(adult$marital)
+```
+
+Reduce this to three groups:
+
+-Married
+-Not-Married
+-Never-Married
+```{r}
+marital.fun <- function(marital){
+  marital <- as.character(marital)
+  if (marital == "Divorced" | marital == "Widowed" | marital =="Separated"){
+    return('Not-Married')
+  
+  } else if (marital == "Married-AF-spouse"| marital == "Married-civ-spouse"| marital =="Married-spouse-absent") {
+    return('Married')
+  
+  } else{
+    return(marital)
+  }
+}
+adult$marital <- sapply(adult$marital, marital.fun)
+```
+
+#Country Column¶
+Check the country column using table()
+
 
