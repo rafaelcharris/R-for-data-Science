@@ -117,5 +117,35 @@ adult$marital <- sapply(adult$marital, marital.fun)
 
 #Country Column¶
 Check the country column using table()
+```{r}
+table(adult$country)
+```
 
+Group these countries together however you see fit. You have flexibility here because there is no right/wrong way to do this, possibly group by continents. You should be able to reduce the number of groups here significantly though.
+```{r}
+continent <- function(country){
+  country <- as.character(country)
+  
+  if (country == "Cambodia" | country == "China" | country =="Hong" | country =="India" | country =="Iran" | country =="Japan"| country =="Laos"| country =="Philippines"| country =="Taiwan"|country =="Thailand"| country =="Vietnam"){
+    return('Asia')
+  
+  } else if (country == "Canada"| country == "Mexico" | country =="United-States"| country == "Outlying-US(Guam-USVI-etc)") {
+    return('North-America')
+  
+  } else if(country == "Columbia"| country == "Cuba" | country =="Dominican-Republic"| country == "Ecuador"| country == "El-Salvador"| country == "Guatemala"| country == "Haiti"| country == "Honduras"| country == "Jamaica"| country == "Nicaragua"| country == "Peru"| country == "Puerto-Rico"| country == "South"| country == "Trinidad&Tobago") {
+    return('Central-Latin-America')
+  } else if (country == "?"){
+    return('Other')
+  } else {
+    return('Europe')
+  }
+}
+adult$country <- sapply(adult$country, continent)
+```
+
+Check the str() of adult again. Make sure any of the columns we changed have factor levels with factor()
+
+```{r}
+str(adult)
+```
 
