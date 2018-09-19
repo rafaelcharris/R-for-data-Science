@@ -295,3 +295,15 @@ We have still a lot of features! Some important, some not so much. R comes with 
 help(step)
 ```
 
+Use new.model <- step(your.model.name) to use the step() function to create a new model.
+
+```{r}
+new.model <- step(model)
+```
+
+You should get a bunch of messages informing you of the process. Check the new.model by using summary()
+```{r}
+summary(new.model)
+```
+
+Create a confusion matrix using the predict function with type='response' as an argument inside of that function.
