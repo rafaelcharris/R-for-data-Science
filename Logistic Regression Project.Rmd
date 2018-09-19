@@ -166,7 +166,82 @@ library(Amelia)
 
 Convert any cell with a '?' or a ' ?' value to a NA value. Hint: is.na() may be useful here or you can also use brackets with a conditional statement. Refer to the solutions if you can't figure this step out.
 ```{r}
+adult[adult == "?"] <- NA
 
 ```
 
 Using table() on a column with NA values should now not display those NA values, instead you'll just see 0 for ?. Optional: Refactor these columns (may take awhile). For example:
+```{r}
+adult$occupation <- sapply(adult$occupation, factor)
+adult$country <- sapply(adult$country, factor)
+adult$type_employer <- sapply(adult$type_employer, factor)
+adult$marital <- sapply(adult$marital, factor)
+
+```
+
+Play around with the missmap function from the Amelia package. Can you figure out what its doing and how to use it?
+```{r}
+library(Amelia)
+missmap(adult, main = "adult data missing", col = c("red", "black"), legend = FALSE)
+
+```
+You should have noticed that using missmap(adult) is bascially a heatmap pointing out missing values (NA). This gives you a quick glance at how much data is missing, in this case, not a whole lot (relatively speaking). You probably also noticed that there is a bunch of y labels, get rid of them by running the command below. What is col=c('yellow','black') doing?
+
+```{r}
+missmap(adult,y.at=c(1),y.labels = c(''),col=c('yellow','black'))
+```
+
+Use na.omit() to omit NA data from the adult data frame. Note, it really depends on the situation and your data to judge whether or not this is a good decision. You shouldn't always just drop NA values.
+```{r}
+adult <- na.omit(adult)
+str(adult)
+```
+
+Use missmap() to check that all the NA values were in fact dropped.
+```{r}
+missmap(adult,y.at=c(1),y.labels = c(''),col=c('yellow','black'))
+
+```
+
+#EDA
+Although we've cleaned the data, we still have explored it using visualization.
+
+Check the str() of the data
+```{r}
+str(adult)
+```
+
+Use ggplot2 to create a histogram of ages, colored by income.
+```{r, message = FALSE}
+library(ggplot2)
+```
+
+```{r}
+#histogram of ages colored by income
+
+ggplot(adult, aes(x=age)) + 
+  geom_histogram(aes(fill = income), col = 'black', binwidth = 1) +
+  theme_bw()
+
+```
+
+Plot a histogram of hours worked per week
+```{r}
+ggplot(adult, aes(x = hr_per_week)) +
+  geom_histogram()
+```
+
+Rename the country column to region column to better reflect the factor levels.
+
+```{r}
+library(dplyr)
+adult <- adult %>%
+  mutate (region = country) %>%
+  select(-country)
+```
+
+Create a barplot of region with the fill color defined by income class. Optional: Figure out how rotate the x axis text for readability
+```{r}
+ggplot()
+```
+
