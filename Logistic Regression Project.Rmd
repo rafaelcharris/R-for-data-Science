@@ -147,5 +147,26 @@ Check the str() of adult again. Make sure any of the columns we changed have fac
 
 ```{r}
 str(adult)
+adult$type_employer <- factor(adult$type_employer)
+adult$country <- factor(adult$country)
+adult$marital <-factor(adult$marital)
+
+```
+_______________
+We could still play around with education and occupation to try to reduce the number of factors for those columns, but let's go ahead and move on to dealing with the missing data. Feel free to group thos columns as well and see how they effect your model.
+
+Missing Data
+Notice how we have data that is missing.
+
+Amelia
+Install and load the Amelia package.
+```{r}
+library(Amelia)
 ```
 
+Convert any cell with a '?' or a ' ?' value to a NA value. Hint: is.na() may be useful here or you can also use brackets with a conditional statement. Refer to the solutions if you can't figure this step out.
+```{r}
+
+```
+
+Using table() on a column with NA values should now not display those NA values, instead you'll just see 0 for ?. Optional: Refactor these columns (may take awhile). For example:
