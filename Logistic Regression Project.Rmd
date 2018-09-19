@@ -242,6 +242,56 @@ adult <- adult %>%
 
 Create a barplot of region with the fill color defined by income class. Optional: Figure out how rotate the x axis text for readability
 ```{r}
-ggplot()
+ggplot(adult) + 
+  geom_bar(aes(x = region, fill=income), col = 'black') +
+  theme_bw()+ 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+#Building a Model
+Now it's time to build a model to classify people into two groups: Above or Below 50k in Salary.
+
+##Logistic Regression
+
+Logistic Regression is a type of classification model. In classification models, we attempt to predict the outcome of categorical dependent variables, using one or more independent variables. The independent variables can be either categorical or numerical.
+
+Logistic regression is based on the logistic function, which always takes values between 0 and 1. Replacing the dependent variable of the logistic function with a linear combination of dependent variables we intend to use for regression, we arrive at the formula for logistic regression.
+
+Take a quick look at the head() of adult to make sure we have a good overview before going into building the model!
+```{r}
+head(adult)
+```
+
+Train Test Split
+Split the data into a train and test set using the caTools library as done in previous lectures. Reference previous solutions notebooks if you need a refresher.
+
+```{r}
+library(caTools)
+
+split = sample.split(adult$income, SplitRatio = 0.7)
+
+train = subset(adult, split == TRUE)
+test = subset(adult, split = FALSE)
+```
+
+Training the Model
+Explore the glm() function with help(glm). Read through the documentation.
+```{r}
+help(glm)
+```
+
+Use all the features to train a glm() model on the training data set, pass the argument family=binomial(logit) into the glm function.
+```{r}
+model <- glm(data = adult, income ~ ., family = binomial(logit))
+```
+
+Check the model summary
+```{r}
+summary(model)
+```
+
+We have still a lot of features! Some important, some not so much. R comes with an awesome function called step(). The step() function iteratively tries to remove predictor variables from the model in an attempt to delete variables that do not significantly add to the fit. How does it do this? It uses AIC.
+```{r}
+help(step)
 ```
 
