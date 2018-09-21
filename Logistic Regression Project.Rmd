@@ -271,7 +271,7 @@ library(caTools)
 split = sample.split(adult$income, SplitRatio = 0.7)
 
 train = subset(adult, split == TRUE)
-test = subset(adult, split = FALSE)
+test = subset(adult, split == FALSE)
 ```
 
 Training the Model
@@ -307,3 +307,27 @@ summary(new.model)
 ```
 
 Create a confusion matrix using the predict function with type='response' as an argument inside of that function.
+
+```{r}
+prediction <- predict.lm(new.model, newdata =test, type = 'response')
+test$prediction <- prediction
+table(test$income, test$prediction >0.5)
+```
+You'll notice we have a rank deficient fit. Find out more about what issues this may cause by reading this stackexchange post.
+
+What was the accuracy of our model?
+```{r}
+
+(6663+1072)/(6663+257+1223+1072)
+```
+
+```{r}
+#Recall
+6663/(6663+257)
+```
+
+```{r}
+#precision
+6663/(6663+1223)
+```
+
