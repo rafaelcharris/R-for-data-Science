@@ -25,14 +25,10 @@ Check that the scaling worked by checking the variance of one of the new columns
 ```{r}
 print(var(standarized.iris[,2]))
 ```
-Join the standardized data with the response/target/label column (the column with the species names)
-.
-
+Join the standardized data with the response/target/label column (the column with the species names).
 ```{r}
 #The algorithm needs a different argument
-Species <- iris$Species
-
-myiris <- data.frame(standarized.iris, Species)
+myiris <- cbind(standarized.iris, iris[5])
 ```
 
 Train and Test Splits
@@ -40,6 +36,54 @@ Use the caTools library to split your standardized data into train and test sets
 
 ```{r}
 library(caTools)
+set.seed(101)
+sample <- sample.split(myiris$Species, SplitRatio = 0.7)
+
+train <- subset(myiris, sample == TRUE)
+test <- subset(myiris, sample == FALSE)
+```
+
+Build a KNN model.
+Call the class library.
+```{r}
+library(class)
+```
+Use the knn function to predict Species of the test set. Use k=1
+```{r}
+predicted.species <- knn(train[1:4], test[1:4], train$Species, k=1)
+predicted.species
+```
+What was your misclassification rate?
+```{r}
+mean(test$Species != predicted.species)
+```
+
+#Choosing a K Value
+Although our data is quite small for us to really get a feel for choosing a good K value, let's practice.
+
+Create a plot of the error (misclassification) rate for k values ranging from 1 to 10.
+```{r}
+library(ggplot2)
+
+prediction.series <- NULL
+error.rate <- NULL
+
+for (i in 1:10){
+  set.seed(101)
+  prediction.series <- knn(train[1:4], test[1:4], train$Species, k = i)
+  error.rate[i] = mean(test$Species != prediction.series)
+}
+
+#Create a new data frame
+k.values <- 1:10
+error.df<- data.frame(error.rate, k.values)
+head(error.df)
+
+#Create the plot
+
+ggplot(error.df, aes(x=k.values, y= error.rate)) +
+  geom_point() +
+  geom_line(lty = 'dotted', col ='red')
 
 
 ```
