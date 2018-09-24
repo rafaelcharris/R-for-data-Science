@@ -1,0 +1,46 @@
+---
+title: "KNN"
+author: "Rafael"
+date: "24 de septiembre de 2018"
+output: html_document
+---
+
+Use the ISLR libary to get the iris data set. Check the head of the iris Data Frame.
+```{r}
+library(ISLR)
+head(iris)
+str(iris)
+```
+
+#Standardize Data
+In this case, the iris data set has all its features in the same order of magnitude, but its good practice (especially with KNN) to standardize features in your data. Lets go ahead and do this even though its not 
+necessary for this data!
+
+Use scale() to standardize the feature columns of the iris dataset. Set this standardized version of the data as a new variable.
+```{r}
+standarized.iris <- scale(iris[ ,-5])
+```
+
+Check that the scaling worked by checking the variance of one of the new columns.
+```{r}
+print(var(standarized.iris[,2]))
+```
+Join the standardized data with the response/target/label column (the column with the species names)
+.
+
+```{r}
+#The algorithm needs a different argument
+Species <- iris$Species
+
+myiris <- data.frame(standarized.iris, Species)
+```
+
+Train and Test Splits
+Use the caTools library to split your standardized data into train and test sets. Use a 70/30 split.
+
+```{r}
+library(caTools)
+
+
+```
+
