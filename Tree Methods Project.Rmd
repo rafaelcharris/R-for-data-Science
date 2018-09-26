@@ -11,6 +11,7 @@ Call the ISLR library and check the head of College (a built-in data frame with 
 library(ISLR)
 df <- College
 head(College)
+library(dplyr)
 ```
 
 EDA
@@ -38,5 +39,55 @@ Create a histogram of Grad.Rate colored by Private. You should see something odd
 ggplot(College) + 
   geom_histogram(aes(x=Grad.Rate, fill = Private), col = 'black', position = 'stack') +
   theme_bw()
+```
+
+What college had a Graduation Rate of above 100% ?
+```{r}
+College[College$Grad.Rate>100,]
+```
+
+Change that college's grad rate to 100%
+```{r}
+College[College$Grad.Rate>100,]$Grad.Rate <- 100
+```
+
+Train Test Split
+Split your data into training and testing sets 70/30. Use the caTools library to do this.
+
+```{r}
+library(caTools)
+
+split <- sample.split(College$Private, SplitRatio = 0.7)
+
+train <- subset(College, split == TRUE)
+test <- subset(College, split == FALSE)
+```
+
+Decision Tree
+Use the rpart library to build a decision tree to predict whether or not a school is Private. Remember to only build your tree off the training data.
+```{r}
+library(rpart)
+
+tree <-rpart(Private~., method='class', data=train)
+
+```
+
+Use predict() to predict the Private label on the test data.
+
+```{r}
+prediction.tree <- predict(tree, data=test)
+```
+
+Check the Head of the predicted values. You should notice that you actually have two columns with the probabilities.
+```{r}
+head(prediction.tree)
+```
+
+Turn these two columns into one column to match the original Yes/No Label for a Private column.
+
+```{r}
+
+pred.df <- as.data.frame(prediction.tree) %>%
+    mutate(Private = ifelse(pred.df$Yes>pred.df$No, "Yes", "No"))
 ```
 
