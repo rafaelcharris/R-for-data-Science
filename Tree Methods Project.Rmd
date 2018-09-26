@@ -1,0 +1,42 @@
+---
+title: "Tree Methods Project"
+author: "Rafael"
+date: "25 de septiembre de 2018"
+output: html_document
+---
+
+Get the Data
+Call the ISLR library and check the head of College (a built-in data frame with ISLR, use data() to check this.) Then reassign College to a dataframe called df
+```{r}
+library(ISLR)
+df <- College
+head(College)
+```
+
+EDA
+Let's explore the data!
+
+Create a scatterplot of Grad.Rate versus Room.Board, colored by the Private column.
+```{r}
+library(ggplot2)
+
+ggplot(College)+ 
+  geom_point(aes(x=Grad.Rate, y=Room.Board, col = Private)) + 
+  theme_bw()
+```
+
+Create a histogram of full time undergrad students, color by Private.
+
+```{r}
+ggplot(College) + 
+  geom_histogram(aes(x=F.Undergrad, fill = Private), col ='black', position = 'identity')
+```
+
+Create a histogram of Grad.Rate colored by Private. You should see something odd here.
+
+```{r}
+ggplot(College) + 
+  geom_histogram(aes(x=Grad.Rate, fill = Private), col = 'black', position = 'stack') +
+  theme_bw()
+```
+
