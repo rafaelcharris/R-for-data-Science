@@ -21,7 +21,7 @@ Create a scatterplot of Grad.Rate versus Room.Board, colored by the Private colu
 ```{r}
 library(ggplot2)
 
-ggplot(College)+ 
+ggplot(df)+ 
   geom_point(aes(x=Grad.Rate, y=Room.Board, col = Private)) + 
   theme_bw()
 ```
@@ -29,26 +29,26 @@ ggplot(College)+
 Create a histogram of full time undergrad students, color by Private.
 
 ```{r}
-ggplot(College) + 
+ggplot(df) + 
   geom_histogram(aes(x=F.Undergrad, fill = Private), col ='black', position = 'identity')
 ```
 
 Create a histogram of Grad.Rate colored by Private. You should see something odd here.
 
 ```{r}
-ggplot(College) + 
+ggplot(df) + 
   geom_histogram(aes(x=Grad.Rate, fill = Private), col = 'black', position = 'stack') +
   theme_bw()
 ```
 
 What college had a Graduation Rate of above 100% ?
 ```{r}
-College[College$Grad.Rate>100,]
+df[df$Grad.Rate>100,]
 ```
 
 Change that college's grad rate to 100%
 ```{r}
-College[College$Grad.Rate>100,]$Grad.Rate <- 100
+df[df$Grad.Rate>100,]$Grad.Rate <- 100
 ```
 
 Train Test Split
@@ -57,10 +57,10 @@ Split your data into training and testing sets 70/30. Use the caTools library to
 ```{r}
 library(caTools)
 
-split <- sample.split(College$Private, SplitRatio = 0.7)
+split <- sample.split(df$Private, SplitRatio = 0.7)
 
-train <- subset(College, split == TRUE)
-test <- subset(College, split == FALSE)
+train <- subset(df, split == TRUE)
+test <- subset(df, split == FALSE)
 ```
 
 Decision Tree
@@ -75,7 +75,7 @@ tree <-rpart(Private~., method='class', data=train)
 Use predict() to predict the Private label on the test data.
 
 ```{r}
-prediction.tree <- predict(tree, data=test)
+prediction.tree <- predict(tree,test)
 ```
 
 Check the Head of the predicted values. You should notice that you actually have two columns with the probabilities.
@@ -88,6 +88,53 @@ Turn these two columns into one column to match the original Yes/No Label for a 
 ```{r}
 
 pred.df <- as.data.frame(prediction.tree) %>%
-    mutate(Private = ifelse(pred.df$Yes>pred.df$No, "Yes", "No"))
+    mutate(Private = ifelse(as.data.frame(prediction.tree)$Yes>=as.data.frame(prediction.tree)$No, "Yes", "No"))
+```
+
+Now use table() to create a confusion matrix of your tree model.
+
+```{r}
+table(pred.df$Private, test$Private)
+```
+
+Use the rpart.plot library and the prp() function to plot out your tree model.
+
+```{r}
+library(rpart.plot)
+prp(tree)
+```
+
+Random Forest
+Now let's build out a random forest model!
+
+Call the randomForest package library
+
+```{r, message=FALSE}
+library(randomForest)
+```
+
+Now use randomForest() to build out a model to predict Private class. Add importance=TRUE as a parameter in the model. (Use help(randomForest) to find out what this does.
+```{r}
+rfmodel <- randomForest(Private~., data = df, importance =TRUE)
+```
+
+What was your model's confusion matrix on its own training set? Use model$confusion.
+```{r}
+rfmodel$confusion
+```
+
+Grab the feature importance with model$importance. Refer to the reading for more info on what Gini[1] means.[2]
+```{r}
+rfmodel$importance
+```
+
+Predictions
+Now use your random forest model to predict on your test set!
+```{r}
+rf.predict <- predict(rfmodel, test)
+```
+
+```{r}
+table(rf.predict, test$Private)
 ```
 
